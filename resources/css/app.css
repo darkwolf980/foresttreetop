@@ -73,5 +73,6 @@
 
     body {
         @apply bg-background text-foreground;
+        @apply my-4
     }
 }

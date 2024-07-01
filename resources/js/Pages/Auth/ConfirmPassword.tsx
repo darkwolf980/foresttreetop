@@ -1,59 +1,72 @@
-import { useEffect, FormEventHandler } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from "@inertiajs/react"
+import { FormEventHandler, useEffect } from "react"
+import ApplicationLogo from "@/Components/ApplicationLogo"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shadcn/Components/ui/card"
+import { Label } from "@/shadcn/Components/ui/label"
+import { Input } from "@/shadcn/Components/ui/input"
+import InputError from "@/Components/InputError"
+import { Button } from "@/shadcn/Components/ui/button"
 
-export default function ConfirmPassword() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        password: '',
-    });
+const ConfirmPassword = () => {
+    const { data, setData, processing, errors, reset, post } = useForm({
+        password: ""
+    })
 
     useEffect(() => {
-        return () => {
-            reset('password');
-        };
-    }, []);
+        reset("password")
+    }, [])
 
     const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        post(route('password.confirm'));
-    };
-
+        e.preventDefault()
+        post(route("password.confirm"))
+    }
     return (
-        <GuestLayout>
-            <Head title="Confirm Password" />
+        <>
+            <Head title={"Confirm Password"} />
+            <div
+                className={"flex flex-col bg-background text-foreground justify-center items-center min-h-screen"}>
+                <ApplicationLogo className={"w-36 fill-current text-green-400"} />
+                <Card className={"px-4 w-[350px] sm:w-[400px] md:w-[500px] bg-card text-card-foreground"}>
+                    <CardHeader>
+                        <CardTitle>Confirm Password</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <form id={"password-confirm-form"} onSubmit={submit}>
+                            <div className={"space-y-6"}>
+                                <div>
+                                    <div className={"mb-1"}>
+                                        <Label htmlFor={"password"}>Password</Label>
+                                    </div>
+                                    <Input id={"password"} name={"password"} type={"password"} value={data.password}
+                                           onChange={(e) => (setData("password", e.target.value))} />
+                                    <InputError message={errors.password} />
+                                </div>
+                            </div>
+                        </form>
+                    </CardContent>
+                    <CardFooter>
+                        <div className={"flex w-full justify-between"}>
+                            <div></div>
+                            <div className={"flex justify-center items-center gap-3"}>
+                                <Button disabled={processing} className={"bg-primary gap-1"}
+                                        form={"password-confirm-form"}
+                                        type={"submit"}>Confirm</Button>
+                            </div>
+                        </div>
 
-            <div className="mb-4 text-sm text-gray-600">
-                This is a secure area of the application. Please confirm your password before continuing.
+                    </CardFooter>
+                    <div
+                        className={" border-t border-b-gray-900 py-4 gap-2 text-foreground flex justify-center items-center"}>
+                        <span>Go back to home</span>
+                        <Link
+                            className="underline text-sm text-gray-600 hover:text-gray-100  rounded-md focus:outline-none  focus:ring-offset-2 focus:focus:ring-offset-gray-800"
+                            href={route("home")}>Home</Link>
+                    </div>
+                </Card>
             </div>
 
-            <form onSubmit={submit}>
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Confirm
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+        </>
+    )
 }
+
+export default ConfirmPassword
