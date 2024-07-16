@@ -5,13 +5,13 @@ import CardWrapper from "@/Components/cardWrapper"
 import { useForm as useReactForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginSchema } from "@/Schema"
-import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/Components/ui/form"
 import { Input } from "@/shadcn/Components/ui/input"
 import { Button } from "@/shadcn/Components/ui/button"
 import { useState } from "react"
 import { Checkbox } from "@/shadcn/Components/ui/checkbox"
 import InputError from "@/Components/InputError"
+import { z } from "zod"
 
 interface LoginProps {
     status: string,
@@ -26,15 +26,15 @@ const Login = ({ status, canResetPassword, errors }: LoginProps) => {
         defaultValues: {
             email: "",
             password: "",
-            remember: "false"
-
+            remember: false
         }
     })
-    const submit = (data: z.infer<typeof LoginSchema>) => {
+    const submit = () => {
+        const formData = form.getValues() as z.infer<typeof LoginSchema>
+        console.log({ ...formData })
         setProcessing(true)
         router.post(route("login"), {
-            remember: form.getValues("remember"),
-            ...data
+            ...formData
         }, {
             onFinish: () => setProcessing(false)
         })
@@ -77,9 +77,7 @@ const Login = ({ status, canResetPassword, errors }: LoginProps) => {
                                     <FormItem>
                                         <div className={"flex items-center space-x-2"}>
                                             <FormControl>
-                                                <Checkbox onCheckedChange={(remember) => {
-                                                    field.onChange(remember)
-                                                }} />
+                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                             </FormControl>
                                             <FormLabel>Remember</FormLabel>
                                         </div>
@@ -91,9 +89,11 @@ const Login = ({ status, canResetPassword, errors }: LoginProps) => {
                             <div className={"pt-6 flex justify-center flex-col w-full"}>
                                 <Button disabled={processing} className={"w-full"}
                                         type={"submit"}>Login</Button>
-                                <div className={"mt-4"}>
-                                    <Link href={route("password.request")}>Forgot password?</Link>
-                                </div>
+                                {canResetPassword &&
+                                    <div className={"mt-4 hover:underline"}>
+                                        <Link href={route("password.request")}>Forgot password?</Link>
+                                    </div>
+                                }
                             </div>
                         </form>
                     </Form>

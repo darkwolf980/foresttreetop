@@ -6,7 +6,8 @@ export const LoginSchema = z.object({
             message: "Please enter a valid email address"
         }),
     password: z.string()
-        .min(8, { message: "Your password must be at least 8 characters long." })
+        .min(8, { message: "Your password must be at least 8 characters long." }),
+    remember: z.boolean().default(false)
 })
 export const RegisterSchema = z.object({
     email: z.string()
@@ -57,4 +58,10 @@ export const ResetPasswordSchema = z.object({
             path: ["password_confirmation"]
         })
     }
+})
+export const EditSchema = z.object({
+    email: z.string()
+        .email({
+            message: "Please enter a valid email address"
+        })
 })
